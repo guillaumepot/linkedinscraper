@@ -193,3 +193,6 @@ Thumbs.db
 *.pem
 secrets.yaml
 config.local.yaml
+
+# todo files
+todo
