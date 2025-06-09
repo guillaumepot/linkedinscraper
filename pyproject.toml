@@ -5,3 +5,10 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12.3"
 dependencies = []
+
+[dependency-groups]
+dev = [
+    "gittyleaks>=0.0.31",
+    "pre-commit>=4.2.0",
+    "pytest>=8.4.0",
+]
