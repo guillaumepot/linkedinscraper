@@ -33,6 +33,7 @@ def main(args):
             hosts=["http://localhost:9200"],
             verify_certs=False
         )
+        print("Elasticsearch connection successful")
     except Exception as e:
         print(f"Error connecting to Elasticsearch: {e}")
         raise e
