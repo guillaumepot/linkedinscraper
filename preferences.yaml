@@ -17,21 +17,15 @@ search_queries:
     f_WT: ""
 
 # Job Filtering parameters (filtered jobs will be stored in another index)
-title_include: |
-  Data Engineer Scientist Machine Learning Engineer Mlops Data Data données ingénieur
+title_include: ["Data", "Engineer", "Scientist", "Machine Learning", "Mlops", "ETL", "Ops", "AI", "IA", "SQL", "BI", "BigQuery"]
 
-title_exclude: |
-  frontend
+title_exclude: ["frontend"]
 
-company_exclude: |
-  ClickJobs.io
+company_exclude: ["ClickJobs.io"]
 
-languages:
-  - "fr"
-  - "en"
+languages: ["fr", "en"]
 
-desc_words: |
-  Data Engineer Scientist Python Mlops pipeline ETL Ops Machine Learning AI IA
+desc_words: ["Data", "Engineer", "Scientist", "Python", "Mlops", "pipeline", "ETL", "Ops", "Machine Learning", "AI", "IA", "SQL", "BI", "BigQuery", "github", "Terraform", "bac+5", "master", "anglais", "AWS", "cloud", "ETL", "Spark", "Looker", "CI/CD", "kafka", "PowerBI"]
   
 max_age: 7 # in days
 
