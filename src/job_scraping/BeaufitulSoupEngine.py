@@ -136,7 +136,7 @@ class BeautifulSoupEngine:
                 # URL Encode keywords and location
                 keywords = quote(query['keywords'])
                 location = quote(query['location'])
-                for i in range(self.config['pages_to_scrap']):
+                for i in range(self.config['pages_to_scrape']):
                     url = f"https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords={keywords}&location={location}&f_TPR=&f_WT={query['f_WT']}&geoId=&f_TPR={self.config['max_age']}&start={25*i}"
                     urls.append(url)
         return urls
