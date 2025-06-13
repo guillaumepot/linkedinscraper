@@ -1,20 +1,11 @@
-from dotenv import load_dotenv
-import os
+# scripts/proxy_connection_tester.py
+
 import requests
 
-load_dotenv('src/scraper/scraper.env')
-PROXY_HTTP = os.getenv('PROXY_HTTP')
-PROXY_HTTPS = os.getenv('PROXY_HTTPS')
 
-proxy = {
-    'http': PROXY_HTTP,
-    'https': PROXY_HTTPS
-}
-
-def test_proxy_connection():
+def test_proxy_connection(proxies: dict, headers: dict):
 
   url = "https://api.ipify.org?format=json"
-
 
   # Make the first API call without using the proxy
   try:
@@ -26,7 +17,7 @@ def test_proxy_connection():
 
   # Make the second API call using the proxy
   try:
-    response2 = requests.get(url, proxies=proxy)
+    response2 = requests.get(url, proxies= proxies)
     response2.raise_for_status()
     ip2 = response2.json()['ip']
   except requests.exceptions.RequestException as e:

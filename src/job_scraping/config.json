@@ -1,0 +1,21 @@
+{
+  "BeautifulSoupEngine": {
+    "proxies": {
+  
+    },
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+    },
+    "rounds": 1,
+    "pages_to_scrape": 10,
+    "max_age": "r84600",
+    "request_timeout": 10,
+    "max_retry": 3,
+    "retry_delay": 5
+  },
+  "ElasticsearchEngine": {
+    "hosts": ["http://localhost:9200"],
+    "verify_certs": false,
+    "indexes": ["jobs", "filtered_jobs"]
+  }
+}
