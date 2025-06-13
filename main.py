@@ -35,9 +35,9 @@ def main(args):
         )
     except Exception as e:
         print(f"Error connecting to Elasticsearch: {e}")
+        raise e
 
     # Execute scraper
-
     scraper = JobScraper()
     scraper.execute_scraper(load_configuration('preferences.yaml', type='yaml'))
 

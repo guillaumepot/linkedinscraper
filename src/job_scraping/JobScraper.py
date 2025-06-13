@@ -9,13 +9,14 @@ import pandas as pd
 from src.job_scraping.ElasticSearchEngine import ElasticSearchEngine
 from src.job_scraping.BeaufitulSoupEngine import BeautifulSoupEngine
 from src.utils.common_func import load_configuration, ExecutionTime
-
+from src.utils.LoggerManager import LoggerManager
 
 class JobScraper:
     def __init__(self):
         self.config = load_configuration('src/job_scraping/config.json', type = 'json')
         self.bs_config = self.config['BeautifulSoupEngine']
         self.es_config = self.config['ElasticsearchEngine']
+        self.logger = LoggerManager.configure_logger(name='JobScraper', verbose=True)
     
     def apply_filters(self, df, preferences, filters:list) -> pd.DataFrame:
         def safe_detect(text):
