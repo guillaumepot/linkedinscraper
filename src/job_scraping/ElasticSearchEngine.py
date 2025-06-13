@@ -10,7 +10,7 @@ class ElasticSearchEngine:
         self.config = config
         
         self.es = elasticsearch.Elasticsearch(
-            hosts = self.config['host'],
+            hosts = self.config['hosts'],
             max_retries = 3,
             retry_on_timeout = True,
             request_timeout = 30

@@ -38,7 +38,8 @@ class JobScraper:
 
         # Company filter
         if "company" in filters:
-            company_filtered = df['company'].str.contains(preferences['company_exclude'], case=False, na=False)
+            pattern_company_exclude = '|'.join(preferences['company_exclude'])
+            company_filtered = df['company'].str.contains(pattern_company_exclude, case=False, na=False)
             df.loc[company_filtered, 'filtered'] = True
         
         # Max age filter

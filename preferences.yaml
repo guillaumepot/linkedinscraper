@@ -25,8 +25,8 @@ title_include: |
 title_exclude: |
   frontend
 
-company_exclude:
-  - "ClickJobs.io"
+company_exclude: |
+  ClickJobs.io
 
 languages:
   - "fr"
