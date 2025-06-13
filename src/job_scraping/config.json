@@ -14,7 +14,7 @@
     "retry_delay": 5
   },
   "ElasticsearchEngine": {
-    "hosts": ["http://localhost:9200"],
+    "hosts": "http://localhost:9200",
     "verify_certs": false,
     "use_ssl": false,
     "ca_certs": null,

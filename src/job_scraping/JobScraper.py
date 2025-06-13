@@ -63,14 +63,46 @@ class JobScraper:
         return df
 
     def remove_existing_jobs_in_database(self, df: pd.DataFrame, engine: ElasticSearchEngine, es_index: str):
-        # Get jobs from database
-        jobs_from_database = engine.search(query = {"query": {"match_all": {}}}, index = es_index)
-        jobs_from_database_DataFrame = pd.DataFrame(jobs_from_database)
-        # Filter jobs from database with the jobs in the DataFrame
-        jobs_from_database_DataFrame = jobs_from_database_DataFrame[jobs_from_database_DataFrame.index.isin(df.index)]
-        # Remove jobs from database from the DataFrame
-        df = df[~df.index.isin(jobs_from_database_DataFrame.index)]
-        return df
+        try:
+            search_result = engine.search(query = {"query": {"match_all": {}}}, index = es_index)
+            
+            existing_jobs = []
+            if 'hits' in search_result and 'hits' in search_result['hits']:
+                for hit in search_result['hits']['hits']:
+                    if '_source' in hit:
+                        existing_jobs.append(hit['_source'])
+            
+            if not existing_jobs:
+                self.logger.info("No existing jobs found in database")
+                return df
+                
+            existing_jobs_df = pd.DataFrame(existing_jobs)
+            self.logger.info(f"Found {len(existing_jobs_df)} existing jobs in database")
+            
+            if 'job_url' in existing_jobs_df.columns and 'job_url' in df.columns:
+                existing_urls = set(existing_jobs_df['job_url'].tolist())
+                df_filtered = df[~df['job_url'].isin(existing_urls)]
+                removed_count = len(df) - len(df_filtered)
+                if removed_count > 0:
+                    self.logger.info(f"Removed {removed_count} jobs that already exist in database")
+                return df_filtered
+            else:
+                existing_jobs_df['title_company'] = existing_jobs_df['title'].astype(str) + "_" + existing_jobs_df['company'].astype(str)
+                df['title_company'] = df['title'].astype(str) + "_" + df['company'].astype(str)
+                
+                existing_combinations = set(existing_jobs_df['title_company'].tolist())
+                df_filtered = df[~df['title_company'].isin(existing_combinations)]
+                
+                df_filtered = df_filtered.drop(columns=['title_company'])
+                
+                removed_count = len(df) - len(df_filtered)
+                if removed_count > 0:
+                    self.logger.info(f"Removed {removed_count} jobs that already exist in database (based on title+company)")
+                return df_filtered
+                
+        except Exception as e:
+            self.logger.warning(f"Error checking existing jobs in database: {e}. Proceeding with all jobs.")
+            return df
 
     @ExecutionTime
     def execute_scraper(self, preferences: dict):
@@ -80,9 +112,16 @@ class JobScraper:
 
         # Insert jobs in a DataFrame
         jobs_df = pd.DataFrame(job_cards)
+        
+        # Check if any jobs were found initially
+        if len(jobs_df) == 0 or jobs_df.empty:
+            self.logger.warning("No jobs found from scraping")
+            return
+            
+        self.logger.info(f"Found {len(jobs_df)} job cards from scraping")
+        
         # Convert date to datetime
         jobs_df['date'] = pd.to_datetime(jobs_df['date'], format = '%Y-%m-%d', errors = 'coerce')
-
 
         # Apply filters: Remove duplicates, user preferences, jobs already in the database
         filters = ["title", "company", "max_age"]
@@ -130,5 +169,3 @@ class JobScraper:
 
                 except Exception as e:
                     self.logger.error(f"Failed to insert new jobs into database: {e}")
-
-        self.logger.warning("No new jobs found")

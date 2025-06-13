@@ -8,37 +8,15 @@ class ElasticSearchEngine:
     def __init__(self, config: dict):
         self.logger = LoggerManager.configure_logger(name='ElasticsearchEngine', verbose=True)
         self.config = config
-
-        connection_params = {
-            'hosts': self.config['hosts'],
-            'max_retries': 3,
-            'retry_on_timeout': True,
-            'request_timeout': 30,
-            'verify_certs': self.config.get('verify_certs', False)
-        }
+        self.es = elasticsearch.Elasticsearch(
+            hosts = self.config['hosts'],
+            max_retries = 3,
+            retry_on_timeout = True,
+            request_timeout = 30,
+            verify_certs = self.config['verify_certs']
+        )
         
-        if self.config.get('use_ssl', False):
-            connection_params['use_ssl'] = True
-            if self.config.get('ca_certs'):
-                connection_params['ca_certs'] = self.config['ca_certs']
-        
-        if self.config.get('basic_auth'):
-            connection_params['basic_auth'] = self.config['basic_auth']
-            
-        self.es = elasticsearch.Elasticsearch(**connection_params)
-        
-        try:
-            if not self.test_connection():
-                self.logger.error("Failed to connect to Elasticsearch")
-                raise ConnectionError("Cannot connect to Elasticsearch")
-                
-            # Create indices with error handling
-            self._create_indices_safely()
-            
-        except Exception as e:
-            self.logger.error(f"Error initializing Elasticsearch connection: {e}")
-            raise
-
+   
     def __enter__(self):
         return self
 
@@ -90,7 +68,27 @@ class ElasticSearchEngine:
         
     def insert_jobs(self, jobs: list, index: str = "jobs"):
         try:
-            self.es.bulk(index=index, body=jobs)
+            self.create_index(index)
+            
+            bulk_data = []
+            for job in jobs:
+                bulk_data.append({
+                    "index": {
+                        "_index": index
+                    }
+                })
+                bulk_data.append(job)
+            
+            response = self.es.bulk(body=bulk_data)
+            
+            if response.get('errors'):
+                error_items = [item for item in response['items'] if 'error' in item.get('index', {})]
+                if error_items:
+                    self.logger.error(f"Bulk insert had errors: {error_items}")
+                    raise Exception(f"Bulk insert had {len(error_items)} errors")
+                    
+            return response
+            
         except Exception as e:
             self.logger.error(f"Error inserting jobs into index {index}: {e}")
             raise

@@ -6,21 +6,19 @@ search_queries:
   - keywords: "Data Engineer"
     location: "Hauts-de-France"
     f_WT: ""
-
-search_queries:
   - keywords: "Data Scientist"
     location: "Hauts-de-France"
     f_WT: ""
-
-search_queries:
   - keywords: "Machine Learning Engineer"
     location: "Hauts-de-France"
     f_WT: ""
-
+  - keywords: "MlOps"
+    location: "Hauts-de-France"
+    f_WT: ""
 
 # Job Filtering parameters (filtered jobs will be stored in another index)
 title_include: |
-  Data Engineer Scientist Machine Learning Engineer Mlops Data Data données
+  Data Engineer Scientist Machine Learning Engineer Mlops Data Data données ingénieur
 
 title_exclude: |
   frontend
@@ -36,7 +34,6 @@ desc_words: |
   Data Engineer Scientist Python Mlops pipeline ETL Ops Machine Learning AI IA
   
 max_age: 7 # in days
-
 
 # LLM params
 OpenAI_API_KEY: ""
