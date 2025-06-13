@@ -8,13 +8,24 @@ class ElasticSearchEngine:
     def __init__(self, config: dict):
         self.logger = LoggerManager.configure_logger(name='ElasticsearchEngine', verbose=True)
         self.config = config
+
+        connection_params = {
+            'hosts': self.config['hosts'],
+            'max_retries': 3,
+            'retry_on_timeout': True,
+            'request_timeout': 30,
+            'verify_certs': self.config.get('verify_certs', False)
+        }
         
-        self.es = elasticsearch.Elasticsearch(
-            hosts = self.config['hosts'],
-            max_retries = 3,
-            retry_on_timeout = True,
-            request_timeout = 30
-        )
+        if self.config.get('use_ssl', False):
+            connection_params['use_ssl'] = True
+            if self.config.get('ca_certs'):
+                connection_params['ca_certs'] = self.config['ca_certs']
+        
+        if self.config.get('basic_auth'):
+            connection_params['basic_auth'] = self.config['basic_auth']
+            
+        self.es = elasticsearch.Elasticsearch(**connection_params)
         
         try:
             if not self.test_connection():

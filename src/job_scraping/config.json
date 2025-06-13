@@ -16,6 +16,9 @@
   "ElasticsearchEngine": {
     "hosts": ["http://localhost:9200"],
     "verify_certs": false,
-    "indexes": ["jobs", "filtered_jobs"]
+    "use_ssl": false,
+    "ca_certs": null,
+    "basic_auth": null,
+    "indexes": ["jobs"]
   }
 }
