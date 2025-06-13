@@ -1,14 +1,20 @@
+from dotenv import load_dotenv
+import os
 import requests
-import json
+
+load_dotenv('src/scraper/scraper.env')
+PROXY_HTTP = os.getenv('PROXY_HTTP')
+PROXY_HTTPS = os.getenv('PROXY_HTTPS')
+
+proxy = {
+    'http': PROXY_HTTP,
+    'https': PROXY_HTTPS
+}
 
 def test_proxy_connection():
 
   url = "https://api.ipify.org?format=json"
 
-  # Load proxy configuration from config.json
-  with open('config.json') as config_file:
-    config = json.load(config_file)
-    proxy = config['proxies']
 
   # Make the first API call without using the proxy
   try:
