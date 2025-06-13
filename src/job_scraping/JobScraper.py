@@ -29,36 +29,57 @@ class JobScraper:
         if 'filtered' not in df.columns:
             df['filtered'] = False
       
-        # Title filter
+        # Title filter (filter if the title is not in the title_include corresponding to the preferences, also, exclude the words in the title_exclude corresponding to the preferences)
         if "title" in filters:
-            pattern_include = '|'.join(preferences['title_include'])
-            pattern_exclude = '|'.join(preferences['title_exclude'])
-            title_filtered = (~df['title'].str.contains(pattern_include, case=False, na=False)) | \
-                           (df['title'].str.contains(pattern_exclude, case=False, na=False))
-            df.loc[title_filtered, 'filtered'] = True
+            title_include = preferences.get('title_include', [])
+            title_exclude = preferences.get('title_exclude', [])
+            
+            for idx, row in df.iterrows():
+                title = str(row['title']).lower()
+                
+                title_has_include = any(word.lower() in title for word in title_include)
+                title_has_exclude = any(word.lower() in title for word in title_exclude)
+                
+                if not title_has_include or title_has_exclude:
+                    df.at[idx, 'filtered'] = True
 
-        # Company filter
+        # Company filter (filter if the company is in the company_exclude corresponding to the preferences)
         if "company" in filters:
-            pattern_company_exclude = '|'.join(preferences['company_exclude'])
-            company_filtered = df['company'].str.contains(pattern_company_exclude, case=False, na=False)
-            df.loc[company_filtered, 'filtered'] = True
+            company_exclude = preferences.get('company_exclude', [])
+            for idx, row in df.iterrows():
+                company = str(row['company'])
+                if company in company_exclude:
+                    df.at[idx, 'filtered'] = True
         
-        # Max age filter
+        # Max age filter (filter if the job is older than the max age corresponding to the preferences)
         if "max_age" in filters:
-            age_filtered = df['date'] < datetime.now() - timedelta(days=preferences['max_age'])
-            df.loc[age_filtered, 'filtered'] = True
+            max_age_days = preferences.get('max_age', 7)
+            cutoff_date = datetime.now() - timedelta(days=max_age_days)
+            
+            for idx, row in df.iterrows():
+                if pd.notna(row['date']) and row['date'] < cutoff_date:
+                    df.at[idx, 'filtered'] = True
 
-        # Language filter
+        # Language filter (filter if the description is not in the languages, use safe_detect)
         if "languages" in filters:
-            df['language'] = df['description'].apply(safe_detect)
-            language_filtered = ~df['language'].isin(preferences['languages'])
-            df.loc[language_filtered, 'filtered'] = True
-        
-        # Description filter
+            allowed_languages = preferences.get('languages', ['en'])
+            for idx, row in df.iterrows():
+                if 'description' in row and pd.notna(row['description']):
+                    description = str(row['description'])
+                    if description.strip():  # Only check if description is not empty
+                        detected_lang = safe_detect(description)
+                        if detected_lang not in allowed_languages:
+                            df.at[idx, 'filtered'] = True
+
+        # Description filter (do not filter if these words are in the description)
         if "description" in filters:
-            pattern_desc_words = '|'.join(preferences['desc_words'])
-            desc_filtered = ~df['description'].str.contains(pattern_desc_words, case=False, na=False)
-            df.loc[desc_filtered, 'filtered'] = True
+            desc_words = preferences.get('desc_words', [])
+            for idx, row in df.iterrows():
+                if 'description' in row and pd.notna(row['description']):
+                    description = str(row['description']).lower()
+                    has_required_word = any(word.lower() in description for word in desc_words)
+                    if not has_required_word:
+                        df.at[idx, 'filtered'] = True
 
         return df
 
