@@ -1,5 +1,0 @@
-# Intro
-project_name: "🎯 LinkedIn Job Scraper"
-project_description: |
-  A comprehensive LinkedIn job scraper with advanced filtering, Elasticsearch storage, and a modern Flask-based web UI for job management.
-  This tool automatically scrapes job postings based on your preferences, applies intelligent filtering, and provides a clean interface to manage your job applications.
