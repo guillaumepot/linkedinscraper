@@ -79,6 +79,8 @@
 
 This tool automatically scrapes job postings from LinkedIn based on your preferences, applies intelligent filtering, and provides a clean interface to manage your job applications. Perfect for job seekers who want to automate their job search process and never miss relevant opportunities.
 
+Initilly designed by **cwwmbm** (https://github.com/cwwmbm/linkedinscraper) and forked to make it better. Initial repo seems outdated and not maintened so I keep my changes here.
+
 ### Built With
 
 * [![Python][python_badge]][python_url]
@@ -496,9 +498,17 @@ docker-compose logs
 
 ## 🤝 Contributing
 
-Contributions make the open source community amazing! Any contributions you make are **greatly appreciated**.
+### Top contributors
 
-### How to Contribute
+<a href="https://github.com/guillaumepot/linkedinscraper/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=guillaumepot/linkedinscraper" alt="contrib.rocks image" />
+</a>
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+Contributions make the open source community amazing! Any contributions you make are **greatly appreciated**.
 
 1. **Fork** the Project
 2. **Create** your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -506,8 +516,8 @@ Contributions make the open source community amazing! Any contributions you make
 4. **Push** to the Branch (`git push origin feature/AmazingFeature`)
 5. **Open** a Pull Request
 
-### Development Setup
 
+### Development Setup
 ```bash
 # Setup development environment
 git clone https://github.com/your-username/linkedinscraper.git
@@ -529,6 +539,11 @@ ruff check .
 - Use conventional commit messages
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+## 🤝 Changelogs
+
+- [WIP]
 
 ## 📄 License
 
