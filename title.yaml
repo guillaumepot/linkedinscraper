@@ -1,0 +1,7 @@
+# Project Title and Basic Information
+project_name: "LinkedIn Scraper"
+project_tagline: "A powerful tool for scraping job listings from LinkedIn with Elasticsearch integration"
+project_description: |
+  LinkedIn Scraper is a comprehensive solution for extracting job listings and company information from LinkedIn. 
+  Built with Python and integrated with Elasticsearch for data storage and analysis, this tool provides an efficient 
+  way to collect and analyze job market data for research, recruitment, or competitive analysis purposes.
