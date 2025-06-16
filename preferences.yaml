@@ -19,7 +19,7 @@ search_queries:
 # Job Filtering parameters (filtered jobs will be stored in another index)
 title_include: ["Data", "Engineer", "Scientist", "Machine Learning", "Mlops", "ETL", "Ops", "AI", "IA", "SQL", "BI", "BigQuery"]
 
-title_exclude: ["frontend"]
+title_exclude: ["frontend", "react.js", "alternance", "stage"]
 
 company_exclude: ["ClickJobs.io"]
 
@@ -29,7 +29,8 @@ desc_words: ["Data", "Engineer", "Scientist", "Python", "Mlops", "pipeline", "ET
   
 max_age: 7 # in days
 
-# LLM params
-OpenAI_API_KEY: ""
-OpenAI_Model: ""
-resume_path: "full local path to your resume in PDF format"
+# LLM params (Not implemented yet)
+# OpenAI:
+#   API_KEY: ""
+#   Model: ""
+#   resume_path: "full local path to your resume in PDF format"

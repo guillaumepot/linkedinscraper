@@ -20,7 +20,7 @@ def main(args):
         os.makedirs('data/kibana')
 
     # Test proxy connection 
-    if not args.skip_proxy:
+    if args.use_proxy:
         scraper_config = load_configuration('src/job_scraping/config.json', type = 'json')['BeautifulSoupEngine']
         proxies = scraper_config['proxies']
         headers = scraper_config['headers']

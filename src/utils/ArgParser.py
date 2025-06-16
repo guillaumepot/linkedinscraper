@@ -21,9 +21,9 @@ class ArgumentParser:
 
 
         parser.add_argument(
-            "-sp", "--skip-proxy",
+            "-p", "--use-proxy",
             action = "store_true",
-            help="Skip the proxy connection test, not recommended.",
+            help="Use the proxy connection test.",
         )
 
         args = parser.parse_args()

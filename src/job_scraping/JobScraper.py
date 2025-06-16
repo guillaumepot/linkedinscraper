@@ -7,7 +7,7 @@ import pandas as pd
 
 
 from src.job_scraping.ElasticSearchEngine import ElasticSearchEngine
-from src.job_scraping.BeaufitulSoupEngine import BeautifulSoupEngine
+from src.job_scraping.BeautifulSoupEngine import BeautifulSoupEngine
 from src.utils.common_func import load_configuration, ExecutionTime
 from src.utils.LoggerManager import LoggerManager
 

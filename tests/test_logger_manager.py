@@ -1,5 +1,4 @@
 # tests/test_logger_manager.py
-# Code: v1.0.0
 
 import pytest
 import logging
