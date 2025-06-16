@@ -1,4 +1,25 @@
 services:
+  flask:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: flask
+    ports:
+      - "5001:5001"
+    depends_on:
+      elasticsearch:
+        condition: service_started
+    networks:
+      - elastic
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5001/ || exit 1"]
+      interval: 30s
+    volumes:
+      - ./src/ui:/app
+    
+
+
+
   elasticsearch:
     image: elasticsearch:8.11.0
     container_name: elasticsearch
