@@ -1,0 +1,21 @@
+# Security & Privacy
+title_troubleshooting: "🐛 Troubleshooting"
+troubleshooting_subtitle_1: "Common Issues"
+troubleshooting_subtitle_1_text_1: |
+  ```bash
+  # Check if Elasticsearch is running
+  curl http://localhost:9200/_cluster/health
+
+  # Restart services
+  docker-compose restart elasticsearch
+  ```
+
+  **No Jobs Found**
+  - Check your search preferences in `preferences.yaml`
+  - Verify LinkedIn is accessible
+  - Check proxy configuration if using proxies
+
+  **Web UI Not Loading**
+  - Ensure Flask app is running on port 5001
+  - Check browser console for JavaScript errors
+  - Verify Elasticsearch connection

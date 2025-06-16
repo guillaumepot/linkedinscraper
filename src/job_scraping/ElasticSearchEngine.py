@@ -5,7 +5,14 @@ from src.utils.LoggerManager import LoggerManager
 
 
 class ElasticSearchEngine:
+    """Engine for managing Elasticsearch operations including indexing and searching job data."""
+    
     def __init__(self, config: dict):
+        """Initialize the Elasticsearch engine with configuration.
+        
+        Args:
+            config (dict): Configuration dictionary containing hosts, credentials, and other settings.
+        """
         self.logger = LoggerManager.configure_logger(name='ElasticsearchEngine', verbose=True)
         self.config = config
         self.es = elasticsearch.Elasticsearch(
@@ -18,13 +25,20 @@ class ElasticSearchEngine:
         
    
     def __enter__(self):
+        """Context manager entry point."""
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
+        """Context manager exit point, closes Elasticsearch connection."""
         if hasattr(self, 'es'):
             self.es.close()
 
     def test_connection(self):
+        """Test the connection to Elasticsearch cluster.
+        
+        Returns:
+            bool: True if connection is successful, False otherwise.
+        """
         try:
             return self.es.ping()
         except Exception as e:
@@ -32,6 +46,7 @@ class ElasticSearchEngine:
             return False
 
     def _create_indices_safely(self):
+        """Create required indices safely, handling any errors that occur."""
         for index_name in ["jobs"]:
             try:
                 self.create_index(index=index_name)
@@ -39,6 +54,15 @@ class ElasticSearchEngine:
                 self.logger.error(f"Failed to create index '{index_name}': {e}")
 
     def create_index(self, index: str, settings: dict = None):
+        """Create an Elasticsearch index if it doesn't exist.
+        
+        Args:
+            index (str): Name of the index to create.
+            settings (dict, optional): Index settings. Defaults to None.
+            
+        Raises:
+            Exception: If index creation fails.
+        """
         try:
             if not self.es.indices.exists(index=index):
                 self.es.indices.create(index=index, body=settings)
@@ -50,6 +74,11 @@ class ElasticSearchEngine:
             raise
 
     def delete_index(self, index: str):
+        """Delete an Elasticsearch index if it exists.
+        
+        Args:
+            index (str): Name of the index to delete.
+        """
         try:
             if self.es.indices.exists(index=index):
                 self.es.indices.delete(index=index)
@@ -60,6 +89,15 @@ class ElasticSearchEngine:
             self.logger.error(f"Error deleting index '{index}': {e}")
 
     def search(self, query: str, index: str = "jobs"):
+        """Search for documents in an Elasticsearch index.
+        
+        Args:
+            query (str): Elasticsearch query to execute.
+            index (str, optional): Index name to search in. Defaults to "jobs".
+            
+        Returns:
+            dict: Search results or empty results if error occurs.
+        """
         try:
             return self.es.search(index=index, body=query)
         except Exception as e:
@@ -67,6 +105,18 @@ class ElasticSearchEngine:
             return {"hits": {"hits": []}}
         
     def insert_jobs(self, jobs: list, index: str = "jobs"):
+        """Insert job documents into Elasticsearch using bulk operation.
+        
+        Args:
+            jobs (list): List of job dictionaries to insert.
+            index (str, optional): Index name to insert into. Defaults to "jobs".
+            
+        Returns:
+            dict: Bulk operation response.
+            
+        Raises:
+            Exception: If bulk insert operation fails.
+        """
         try:
             self.create_index(index)
             

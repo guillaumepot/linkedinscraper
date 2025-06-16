@@ -1,0 +1,14 @@
+generator:
+  data_directory: .
+  output_file: README.md
+  template_file: README.template
+logging:
+  format: '%(asctime)s - %(levelname)s - %(message)s'
+  level: INFO
+sections:
+- file: title.yaml
+  name: title
+  required: true
+validation:
+  check_placeholders: true
+  strict_mode: false

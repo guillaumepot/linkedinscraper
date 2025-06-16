@@ -1,0 +1,51 @@
+# Features
+title_features: "🚀 Features"
+subtitle_1_features: "Core Functionality"
+text_1_features: |
+  - **Automated Job Scraping**: Scrapes LinkedIn job postings based on configurable search queries
+  - **Intelligent Filtering**: Advanced filtering system for job titles, companies, descriptions, languages, and age
+  - **Elasticsearch Integration**: Stores and indexes job data for fast search and retrieval
+  - **Duplicate Prevention**: Automatically detects and prevents duplicate job entries
+  - **Language Detection**: Filters jobs by detected language in job descriptions
+  - **Proxy Support**: Optional proxy connection support for enhanced scraping reliability
+
+subtitle_2_features: "Web Interface"
+text_2_features: |
+  - **Modern Flask UI**: Responsive web interface for job management
+  - **Job Status Tracking**: Track application status (Applied, Interview, Interested, Rejected, Filtered)
+  - **Advanced Search**: Search and filter jobs by multiple criteria
+  - **Real-time Statistics**: Dashboard with job counts and analytics
+  - **Mobile Responsive**: Works seamlessly on desktop, tablet, and mobile devices
+
+subtitle_3_features: "Data Management"
+text_3_features: |
+  - **Elasticsearch Storage**: High-performance search and analytics
+  - **Kibana Integration**: Visualize job data with Kibana dashboards
+  - **Export Capabilities**: Data can be exported and analyzed
+  - **Backup Support**: Docker-based persistent storage
+
+subtitle_4_features: "Advanced features"
+text_4_features: |
+  **Multiple level of filtering:**
+  ```
+  1. **Title Filtering**: Include/exclude based on job titles
+  2. **Company Filtering**: Exclude specific companies
+  3. **Age Filtering**: Filter jobs older than specified days
+  4. **Language Detection**: Filter by detected language
+  5. **Description Filtering**: Filter based on description keywords
+  ```
+
+  **Elasticsearch Integration:**
+  ```
+  - **Full-text Search**: Search across all job fields
+  - **Aggregations**: Generate statistics and analytics
+  - **Real-time Updates**: Immediate data availability
+  - **Scalable Storage**: Handle thousands of job entries
+  ```
+
+  **Proxy support:**
+  ```
+  - **Connection Testing**: Verify proxy connectivity before scraping
+  - **Rotation Support**: Use multiple proxies for enhanced reliability
+  - **Error Handling**: Graceful fallback when proxies fail
+  ```
