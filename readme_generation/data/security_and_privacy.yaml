@@ -1,6 +1,0 @@
-# Security & Privacy
-title_security_privacy: "🔒 Security & Privacy"
-security_privacy_text_1: |
-  - **No Personal Data Storage**: Only public job posting information is stored
-  - **Respectful Scraping**: Implements delays to avoid limiters
-  - **Local Storage**: All data is stored locally by default
