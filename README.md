@@ -503,7 +503,7 @@ Contributions make the open source community amazing! Any contributions you make
 ### Development Setup
 ```bash
 # Setup development environment
-git clone https://github.com/your-username/linkedinscraper.git
+git clone https://github.com/guillaumepot/linkedinscraper.git
 cd linkedinscraper
 uv sync --dev
 pre-commit install
@@ -552,8 +552,6 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 * [Flask](https://flask.palletsprojects.com/) - Web framework
 * [Docker](https://www.docker.com/) - Containerization platform
 * [uv](https://docs.astral.sh/uv/) - Fast Python package manager
-* [Choose an Open Source License](https://choosealicense.com) - License guidance
 * [Img Shields](https://shields.io) - README badges
-* [Best-README-Template](https://github.com/othneildrew/Best-README-Template) - README template inspiration
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
