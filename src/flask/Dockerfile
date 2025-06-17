@@ -13,7 +13,8 @@ RUN pip install --no-cache-dir \
     flask \
     flask-cors \
     elasticsearch \
-    requests
+    requests \
+    pyyaml
 
 # Add the parent directory to Python path so imports work correctly
 ENV PYTHONPATH=/app:$PYTHONPATH

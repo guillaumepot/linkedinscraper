@@ -177,7 +177,7 @@ cd linkedinscraper
 uv sync
 
 # Start services
-docker-compose up -d
+docker compose up -d
 
 # Configure your preferences
 cp preferences.yaml.example preferences.yaml
@@ -236,7 +236,7 @@ max_age: 7  # Maximum job age in days
 
 #### 4. Start Services
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 This will start:
@@ -250,7 +250,7 @@ This will start:
 curl http://localhost:9200/_cluster/health
 
 # Check if all containers are running
-docker-compose ps
+docker compose ps
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -277,23 +277,6 @@ uv run main.py --help
 3. **Manage Applications**: Update job status (Applied, Interview, etc.)
 4. **Search & Filter**: Use advanced search to find specific jobs
 5. **View Analytics**: Check statistics and trends
-
-### API Usage
-
-The scraper can also be used programmatically:
-
-```python
-from src.job_scraping.JobScraper import JobScraper
-
-# Initialize scraper
-scraper = JobScraper()
-
-# Scrape jobs
-scraper.scrape_jobs()
-
-# Access scraped data
-jobs = scraper.get_jobs()
-```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -443,10 +426,10 @@ ruff format .
 curl http://localhost:9200/_cluster/health
 
 # Restart Elasticsearch
-docker-compose restart elasticsearch
+docker compose restart elasticsearch
 
 # Check logs
-docker-compose logs elasticsearch
+docker compose logs elasticsearch
 ```
 
 #### No Jobs Found
@@ -459,7 +442,7 @@ docker-compose logs elasticsearch
 - ✅ Ensure Flask app is running on port 5001
 - ✅ Check browser console for JavaScript errors
 - ✅ Verify Elasticsearch connection
-- ✅ Check Docker containers are running: `docker-compose ps`
+- ✅ Check Docker containers are running: `docker compose ps`
 
 #### Python Environment Issues
 ```bash
@@ -474,11 +457,11 @@ python --version  # Should be 3.12.3+
 #### Docker Issues
 ```bash
 # Reset Docker containers
-docker-compose down
-docker-compose up -d
+docker compose down
+docker compose up -d
 
 # Check Docker logs
-docker-compose logs
+docker compose logs
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

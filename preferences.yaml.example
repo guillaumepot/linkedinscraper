@@ -1,0 +1,26 @@
+# preferences.yaml
+
+# Search query preferences
+# f_WT: Any (""), On-Site (0), Hybrid (1), Remote(2)
+search_queries:
+  - keywords: "Data Engineer"
+    location: "France"
+    f_WT: ""
+  - keywords: "Data Scientist"
+    location: "Belgium"
+    f_WT: ""
+
+# Job Filtering parameters (filtered jobs will be stored in another index)
+title_include: ["Data", "Engineer", "Scientist", "Machine Learning", "Mlops", "ETL", "Ops"]
+title_exclude: ["frontend", "react.js"]
+company_exclude: ["ClickJobs.io"]
+languages: ["fr", "en"]
+# Words to include from the job description (if not in the description, the job will be filtered)
+desc_words: ["Data", "Engineer", "Scientist", "Python", "Mlops", "pipeline", "ETL", "Ops", "Machine Learning", "AI", "IA", "SQL", "BI", "BigQuery", "github", "Terraform", "bac+5", "master", "anglais", "AWS", "cloud", "ETL", "Spark", "Looker", "CI/CD", "kafka", "PowerBI"]
+max_age: 7 # in days
+
+# LLM params (Not implemented yet)
+# OpenAI:
+#   API_KEY: ""
+#   Model: ""
+#   resume_path: "full local path to your resume in PDF format"
