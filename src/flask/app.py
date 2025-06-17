@@ -3,7 +3,7 @@
 from flask import Flask, render_template, jsonify, request
 from flask_cors import CORS
 
-from src.ui.flask_functions import get_jobs_from_es, update_job_status, delete_job, get_companies, get_job_stats
+from flask_functions import get_jobs_from_es, update_job_status, delete_job, get_companies, get_job_stats
 
 
 

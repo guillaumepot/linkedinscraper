@@ -1,7 +1,7 @@
 services:
   flask:
     build:
-      context: ./src/ui
+      context: ./src/flask
       dockerfile: Dockerfile
     container_name: flask
     ports:
@@ -15,10 +15,7 @@ services:
       test: ["CMD-SHELL", "curl -f http://localhost:5001/ || exit 1"]
       interval: 30s
     volumes:
-      - ./src/ui:/app
-    
-
-
+      - ./src/flask:/app
 
   elasticsearch:
     image: elasticsearch:8.11.0
