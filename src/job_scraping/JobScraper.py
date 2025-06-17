@@ -173,10 +173,11 @@ class JobScraper:
                                         filters)
             
             # Add columns: interest, applied, interview, rejected
-            jobs_df['interest'] = False
-            jobs_df['applied'] = False
-            jobs_df['interview'] = False
-            jobs_df['rejected'] = False
+            jobs_df['interest'] = "false"
+            jobs_df['applied'] = "false"
+            jobs_df['interview'] = "false"
+            jobs_df['rejected'] = "false"
+            jobs_df['not_interested'] = "false"
 
             # convert df to dict
             new_jobs = jobs_df.to_dict(orient = 'records')
