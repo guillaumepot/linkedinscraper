@@ -233,8 +233,8 @@ function createJobCard(job) {
         statusBadges.push('<span class="status-badge not-interested">Not Interested</span>');
     }
     if (job.filtered) {
-        statusClasses.push('hidden');
-        statusBadges.push('<span class="status-badge hidden">Hidden</span>');
+        statusClasses.push('filtered');
+        statusBadges.push('<span class="status-badge filtered">Filtered</span>');
     }
     
     const description = job.description || 'No description available';
@@ -276,7 +276,7 @@ function createJobCard(job) {
                             <i class="fas fa-times me-1"></i>${job.rejected ? 'Unreject' : 'Rejected'}
                         </button>
                         <button class="btn btn-outline-secondary btn-sm" onclick="toggleJobStatus('${job._id}', 'filtered', ${!job.filtered})">
-                            <i class="fas fa-eye-slash me-1"></i>${job.filtered ? 'Unhide' : 'Hide'}
+                            <i class="fas fa-eye-slash me-1"></i>${job.filtered ? 'Unfilter' : 'Filter'}
                         </button>
                         <button class="btn btn-danger btn-sm" onclick="deleteJob('${job._id}')" title="Remove job permanently">
                             <i class="fas fa-trash me-1"></i>Remove
