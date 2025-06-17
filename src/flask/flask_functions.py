@@ -3,8 +3,8 @@
 from datetime import datetime
 
 
-from src.job_scraping.ElasticSearchEngine import ElasticSearchEngine
-from src.utils.common_func import load_configuration
+from ElasticSearchEngine import ElasticSearchEngine
+from common_func import load_configuration
 
 
 
