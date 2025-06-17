@@ -1,8 +1,8 @@
 services:
   flask:
     build:
-      context: ./src/flask
-      dockerfile: Dockerfile
+      context: ./src
+      dockerfile: flask/Dockerfile
     container_name: flask
     ports:
       - "5001:5001"
@@ -16,6 +16,7 @@ services:
       interval: 30s
     volumes:
       - ./src/flask:/app
+
 
   elasticsearch:
     image: elasticsearch:8.11.0
