@@ -4,6 +4,8 @@ services:
       context: ./src
       dockerfile: flask/Dockerfile
     container_name: flask
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
     ports:
       - "5001:5001"
     depends_on:
