@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
 RUN pip install --no-cache-dir \
     flask \
     flask-cors \
-    elasticsearch \
+    elasticsearch==8.11.0 \
     requests \
     pyyaml
 

@@ -3,10 +3,11 @@
 from datetime import datetime
 import elasticsearch
 import json
+import os
 import yaml
 
 es_config: dict = {
-    "hosts": "http://localhost:9200",
+    "hosts": os.getenv("ELASTICSEARCH_URL", "http://localhost:9200"),
     "verify_certs": False,
     "use_ssl": False,
     "indexes": ["jobs"]
