@@ -81,6 +81,39 @@
             </div>
         </div>
 
+        <!-- CV Scan Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-file-pdf me-2"></i>CV Matching
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="cvFile" class="form-label">Upload CV (PDF)</label>
+                            <input type="file" class="form-control" id="cvFile" accept=".pdf">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-primary" onclick="uploadCV()">
+                            <i class="fas fa-upload me-2"></i>CV Scan
+                        </button>
+                        <span id="cvStatus" class="ms-3 text-muted">No CV uploaded</span>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="sortByCvMatch">
+                            <label class="form-check-label" for="sortByCvMatch">
+                                Sort by CV Match %
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Search and Filter Section -->
         <div class="card mb-4">
             <div class="card-header">

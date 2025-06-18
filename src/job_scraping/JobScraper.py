@@ -81,7 +81,19 @@ class JobScraper:
                     if not has_required_word:
                         df.at[idx, 'filtered'] = True
 
-        return df
+        # Remove filtered jobs from DataFrame
+        initial_count = len(df)
+        df_filtered = df[df['filtered'] == False].copy()
+        
+        # Drop the filtered column as it's no longer needed
+        if 'filtered' in df_filtered.columns:
+            df_filtered = df_filtered.drop(columns=['filtered'])
+        
+        filtered_count = initial_count - len(df_filtered)
+        if filtered_count > 0:
+            self.logger.info(f"Filtered out {filtered_count} jobs based on filters: {filters}")
+        
+        return df_filtered
 
     def remove_existing_jobs_in_database(self, df: pd.DataFrame, engine: ElasticSearchEngine, es_index: str):
         try:
@@ -147,6 +159,8 @@ class JobScraper:
         # Apply filters: Remove duplicates, user preferences, jobs already in the database
         filters = ["title", "company", "max_age"]
         jobs_df = jobs_df.drop_duplicates(subset = ['title', 'company'], keep = 'first')
+        jobs_df = jobs_df.drop_duplicates(subset = ['job_url'], keep = 'first')
+
         jobs_df = self.apply_filters(jobs_df,
                                      preferences,
                                      filters)
@@ -167,7 +181,7 @@ class JobScraper:
             jobs_df['description'] = job_descriptions
 
             # Apply filters: language, description
-            filters = ["language", "description"]
+            filters = ["languages", "description"]
             jobs_df = self.apply_filters(jobs_df,
                                         preferences,
                                         filters)

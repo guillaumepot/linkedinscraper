@@ -4,7 +4,11 @@ from datetime import datetime
 import elasticsearch
 import json
 import os
+import PyPDF2
 import yaml
+import re
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 es_config: dict = {
     "hosts": os.getenv("ELASTICSEARCH_URL", "http://localhost:9200"),
@@ -15,6 +19,15 @@ es_config: dict = {
 
 
 # Functions
+def load_pdf_file(file_path: str):
+    with open(file_path, 'rb') as file:
+        reader = PyPDF2.PdfReader(file)
+        text = ""
+        for page in reader.pages:
+            text += page.extract_text()
+    return text
+
+
 def load_configuration(file_path: str, type: str = 'yaml'):
     if type == 'yaml':
         with open(file_path, 'r') as f:
@@ -24,8 +37,66 @@ def load_configuration(file_path: str, type: str = 'yaml'):
             return json.load(f)
 
 
+def load_cv_text():
+    """Load CV text from /app/cv.pdf if it exists"""
+    cv_path = "/app/cv.pdf"
+    if os.path.exists(cv_path):
+        try:
+            return load_pdf_file(cv_path)
+        except Exception as e:
+            print(f"Error loading CV: {e}")
+            return None
+    return None
 
-def get_jobs_from_es(search_query=None, filters=None, page=1, per_page=20):
+
+def preprocess_text(text):
+    """Preprocess text for similarity calculation"""
+    if not text:
+        return ""
+    # Convert to lowercase, remove special characters, keep only alphanumeric and spaces
+    text = re.sub(r'[^a-zA-Z0-9\s]', ' ', text.lower())
+    # Remove extra whitespace
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text
+
+
+def calculate_cv_match_percentage(job_description, cv_text):
+    """Calculate similarity percentage between job description and CV"""
+    if not cv_text or not job_description:
+        return 0.0
+    
+    try:
+        # Preprocess texts
+        job_desc_clean = preprocess_text(job_description)
+        cv_clean = preprocess_text(cv_text)
+        
+        if not job_desc_clean or not cv_clean:
+            return 0.0
+        
+        # Create TF-IDF vectors
+        vectorizer = TfidfVectorizer(
+            stop_words='english',
+            max_features=1000,
+            ngram_range=(1, 2)
+        )
+        
+        # Fit and transform the texts
+        tfidf_matrix = vectorizer.fit_transform([job_desc_clean, cv_clean])
+        
+        # Calculate cosine similarity
+        similarity = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])[0][0]
+        
+        # Convert to percentage and round
+        percentage = round(similarity * 100, 1)
+        
+        return max(0.0, min(100.0, percentage))
+    
+    except Exception as e:
+        print(f"Error calculating CV match: {e}")
+        return 0.0
+
+
+def get_jobs_from_es(search_query=None, filters=None, page=1, per_page=20, sort_by_cv_match=False):
     """Get jobs from Elasticsearch with optional search and filters"""
     with ElasticSearchEngine(es_config) as es_engine:
         # Build the query
@@ -93,6 +164,12 @@ def get_jobs_from_es(search_query=None, filters=None, page=1, per_page=20):
                 date_filter["range"]["date"]["lte"] = filters['date_to']
             query["query"]["bool"]["filter"].append(date_filter)
         
+        # If sorting by CV match, we need to get more results to sort them properly
+        if sort_by_cv_match:
+            # Get all jobs for this page and sort them by CV match
+            query["size"] = 1000  # Get more results to sort properly
+            query["from"] = 0
+        
         # If no conditions, match all
         if not query["query"]["bool"]["must"] and not query["query"]["bool"]["filter"]:
             query["query"] = {"match_all": {}}
@@ -106,10 +183,18 @@ def get_jobs_from_es(search_query=None, filters=None, page=1, per_page=20):
                 total_count = total.get('value', 0)
             else:
                 total_count = total
+            
+            # Load CV text once for all jobs
+            cv_text = load_cv_text()
                 
             for hit in response.get('hits', {}).get('hits', []):
                 job = hit['_source']
                 job['_id'] = hit['_id']
+                
+                # Calculate CV match percentage
+                job_description = job.get('description', '')
+                job['cv_match_percentage'] = calculate_cv_match_percentage(job_description, cv_text)
+                
                 # Format date for display
                 if job.get('date'):
                     try:
@@ -123,16 +208,25 @@ def get_jobs_from_es(search_query=None, filters=None, page=1, per_page=20):
                     job['date_formatted'] = 'N/A'
                 jobs.append(job)
             
+            # Sort by CV match if requested
+            if sort_by_cv_match:
+                jobs.sort(key=lambda x: x['cv_match_percentage'], reverse=True)
+                # Apply pagination after sorting
+                start_idx = (page - 1) * per_page
+                end_idx = start_idx + per_page
+                jobs = jobs[start_idx:end_idx]
+            
             return {
                 'jobs': jobs,
                 'total': total_count,
                 'page': page,
                 'per_page': per_page,
-                'total_pages': (total_count + per_page - 1) // per_page
+                'total_pages': (total_count + per_page - 1) // per_page,
+                'cv_available': cv_text is not None
             }
         except Exception as e:
             print(f"Error searching jobs: {e}")
-            return {'jobs': [], 'total': 0, 'page': 1, 'per_page': per_page, 'total_pages': 0}
+            return {'jobs': [], 'total': 0, 'page': 1, 'per_page': per_page, 'total_pages': 0, 'cv_available': False}
 
 def update_job_status(job_id, field, value):
     """Update a job's status field in Elasticsearch"""

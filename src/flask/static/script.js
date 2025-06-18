@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadCompanies();
     loadStats();
     loadJobs();
+    checkCvStatus();
     
     // Set up event listeners
     setupEventListeners();
@@ -58,6 +59,12 @@ function setupEventListeners() {
             currentPage = 1;
             loadJobs();
         });
+    });
+    
+    // CV sort checkbox
+    document.getElementById('sortByCvMatch').addEventListener('change', function() {
+        currentPage = 1;
+        loadJobs();
     });
 }
 
@@ -163,10 +170,12 @@ async function loadJobs() {
     
     try {
         const filters = buildFilters();
+        const sortByCvMatch = document.getElementById('sortByCvMatch').checked;
         const params = new URLSearchParams({
             page: currentPage,
             per_page: currentPerPage,
-            search: currentSearch
+            search: currentSearch,
+            sort_by_cv_match: sortByCvMatch
         });
         
         // Add filters to params
@@ -249,6 +258,7 @@ function createJobCard(job) {
                     <div class="job-company">${escapeHtml(job.company)}</div>
                     <div class="job-location"><i class="fas fa-map-marker-alt me-1"></i>${escapeHtml(job.location || 'Location not specified')}</div>
                     <div class="job-date"><i class="fas fa-calendar me-1"></i>${job.date_formatted}</div>
+                    <div class="job-cv-match"><i class="fas fa-chart-line me-1"></i>CV Match: <span class="cv-match-percentage ${getCvMatchClass(job.cv_match_percentage || 0)}">${job.cv_match_percentage || 0}%</span></div>
                     <div class="job-url">
                         <a href="${job.job_url}" target="_blank" title="View on LinkedIn">
                             <i class="fab fa-linkedin me-1"></i>View on LinkedIn
@@ -547,6 +557,9 @@ function clearFilters() {
         document.getElementById(filterId).checked = false;
     });
     
+    // Clear CV sort checkbox
+    document.getElementById('sortByCvMatch').checked = false;
+    
     currentSearch = '';
     currentPage = 1;
     loadJobs();
@@ -562,6 +575,18 @@ function escapeHtml(text) {
         "'": '&#039;'
     };
     return text ? text.replace(/[&<>"']/g, function(m) { return map[m]; }) : '';
+}
+
+function getCvMatchClass(percentage) {
+    if (percentage >= 70) {
+        return 'cv-match-high';
+    } else if (percentage >= 40) {
+        return 'cv-match-medium';
+    } else if (percentage > 0) {
+        return 'cv-match-low';
+    } else {
+        return 'cv-match-none';
+    }
 }
 
 function showSuccess(message) {
@@ -590,4 +615,67 @@ function showNotification(message, type = 'info') {
             notification.remove();
         }
     }, 5000);
+}
+
+// CV Upload Functions
+async function uploadCV() {
+    const fileInput = document.getElementById('cvFile');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        showError('Please select a PDF file to upload');
+        return;
+    }
+    
+    if (!file.name.toLowerCase().endsWith('.pdf')) {
+        showError('Only PDF files are allowed');
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('cv_file', file);
+    
+    try {
+        showLoading();
+        const response = await fetch('/api/cv/upload', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showSuccess('CV uploaded successfully! Calculating job matches...');
+            checkCvStatus();
+            // Reload jobs to update CV match percentages
+            loadJobs();
+            // Clear the file input
+            fileInput.value = '';
+        } else {
+            showError(result.error || 'Failed to upload CV');
+        }
+    } catch (error) {
+        console.error('Error uploading CV:', error);
+        showError('Failed to upload CV. Please try again.');
+    } finally {
+        hideLoading();
+    }
+}
+
+async function checkCvStatus() {
+    try {
+        const response = await fetch('/api/cv/status');
+        const result = await response.json();
+        
+        const statusElement = document.getElementById('cvStatus');
+        if (result.cv_available) {
+            statusElement.textContent = 'CV uploaded';
+            statusElement.className = 'ms-3 text-success';
+        } else {
+            statusElement.textContent = 'No CV uploaded';
+            statusElement.className = 'ms-3 text-muted';
+        }
+    } catch (error) {
+        console.error('Error checking CV status:', error);
+    }
 } 

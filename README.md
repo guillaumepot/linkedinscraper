@@ -471,7 +471,7 @@ docker compose logs
 ### Upcoming Features
 
 - [ ] **🤖 OpenAI Integration**: Match your CV with job offers and get personalized advice
-- [ ] **🔍 Enhanced Matching**: Elasticsearch-based CV-job matching algorithm
+- [X] **🔍 Enhanced Matching**: Elasticsearch-based CV-job matching algorithm
 
 ### Long-term Goals
 

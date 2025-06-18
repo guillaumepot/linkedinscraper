@@ -196,5 +196,8 @@ Thumbs.db
 secrets.yaml
 config.local.yaml
 
-# todo files
+# todo & test files
 todo
+preferences.yaml
+test.py
+cv.pdf
