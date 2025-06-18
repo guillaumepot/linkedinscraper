@@ -108,6 +108,52 @@ body {
     margin-bottom: 1rem;
 }
 
+.job-cv-match {
+    font-size: 0.875rem;
+    color: var(--secondary-color);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.cv-match-percentage {
+    font-weight: 600;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+}
+
+.cv-match-percentage:contains("0%") {
+    color: var(--secondary-color);
+    background-color: #f8f9fa;
+}
+
+/* High match (70%+) - Green */
+.job-cv-match .cv-match-percentage {
+    color: var(--secondary-color);
+    background-color: #f8f9fa;
+}
+
+/* Color coding based on percentage values - will be applied via JavaScript */
+.cv-match-high {
+    color: #fff !important;
+    background-color: var(--success-color) !important;
+}
+
+.cv-match-medium {
+    color: #fff !important;
+    background-color: var(--warning-color) !important;
+}
+
+.cv-match-low {
+    color: #fff !important;
+    background-color: var(--danger-color) !important;
+}
+
+.cv-match-none {
+    color: var(--secondary-color) !important;
+    background-color: #f8f9fa !important;
+}
+
 .job-description {
     font-size: 0.875rem;
     color: var(--dark-color);

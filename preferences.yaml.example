@@ -10,7 +10,7 @@ search_queries:
     location: "Belgium"
     f_WT: ""
 
-# Job Filtering parameters (filtered jobs will be stored in another index)
+# Job Filtering parameters (filtered jobs will be stored with 'filtered' tag)
 title_include: ["Data", "Engineer", "Scientist", "Machine Learning", "Mlops", "ETL", "Ops"]
 title_exclude: ["frontend", "react.js"]
 company_exclude: ["ClickJobs.io"]

@@ -14,7 +14,9 @@ RUN pip install --no-cache-dir \
     flask-cors \
     elasticsearch==8.11.0 \
     requests \
-    pyyaml
+    pyyaml \
+    scikit-learn \
+    pypdf2
 
 # Add the parent directory to Python path so imports work correctly
 ENV PYTHONPATH=/app:$PYTHONPATH

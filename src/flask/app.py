@@ -2,6 +2,7 @@
 
 from flask import Flask, render_template, jsonify, request
 from flask_cors import CORS
+import os
 
 from flask_functions import get_jobs_from_es, update_job_status, delete_job, get_companies, get_job_stats
 
@@ -29,6 +30,7 @@ def api_jobs():
     search_query = request.args.get('search', '')
     page = int(request.args.get('page', 1))
     per_page = int(request.args.get('per_page', 20))
+    sort_by_cv_match = request.args.get('sort_by_cv_match', 'false').lower() == 'true'
     
     # Get filters
     filters = {}
@@ -41,7 +43,7 @@ def api_jobs():
     filters['date_from'] = request.args.get('date_from')
     filters['date_to'] = request.args.get('date_to')
     
-    result = get_jobs_from_es(search_query, filters, page, per_page)
+    result = get_jobs_from_es(search_query, filters, page, per_page, sort_by_cv_match)
     return jsonify(result)
 
 @app.route('/api/jobs/<job_id>/update', methods=['POST'])
@@ -83,6 +85,41 @@ def api_stats():
     """API endpoint to get job statistics"""
     stats = get_job_stats()
     return jsonify(stats)
+
+@app.route('/api/cv/upload', methods=['POST'])
+def api_upload_cv():
+    """API endpoint to upload CV file"""
+    try:
+        if 'cv_file' not in request.files:
+            return jsonify({'error': 'No file provided'}), 400
+        
+        file = request.files['cv_file']
+        if file.filename == '':
+            return jsonify({'error': 'No file selected'}), 400
+        
+        if file and file.filename.lower().endswith('.pdf'):
+            # Create the /app directory if it doesn't exist
+            cv_dir = '/app'
+            os.makedirs(cv_dir, exist_ok=True)
+            
+            # Save the file as cv.pdf
+            cv_path = os.path.join(cv_dir, 'cv.pdf')
+            file.save(cv_path)
+            
+            return jsonify({'success': True, 'message': 'CV uploaded successfully'})
+        else:
+            return jsonify({'error': 'Only PDF files are allowed'}), 400
+            
+    except Exception as e:
+        print(f"Error uploading CV: {e}")
+        return jsonify({'error': 'Failed to upload CV'}), 500
+
+@app.route('/api/cv/status')
+def api_cv_status():
+    """API endpoint to check if CV is uploaded"""
+    cv_path = '/app/cv.pdf'
+    cv_exists = os.path.exists(cv_path)
+    return jsonify({'cv_available': cv_exists})
 
 
 
