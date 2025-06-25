@@ -1,0 +1,72 @@
+{
+  "BeautifulSoupEngine": {
+    "proxies": {
+  
+    },
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+    },
+    "rounds": 3,
+    "pages_to_scrape": 10,
+    "max_age": "r84600",
+    "request_timeout": 10,
+    "max_retry": 3,
+    "retry_delay": 5
+  },
+  "ElasticsearchEngine": {
+    "hosts": "http://localhost:9200",
+    "verify_certs": false,
+    "use_ssl": false,
+    "ca_certs": null,
+    "basic_auth": null,
+    "indexes": ["jobs"]
+  },
+  "Logger": {
+    "logging": {
+      "version": 1,
+      "disable_existing_loggers": false,
+      "formatters": {
+        "simple": {
+          "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        }
+      },
+      "handlers": {
+        "console": {
+          "class": "logging.StreamHandler",
+          "level": "DEBUG",
+          "formatter": "simple",
+          "stream": "ext://sys.stdout"
+        },
+        "file": {
+          "class": "logging.FileHandler",
+          "level": "DEBUG",
+          "formatter": "simple",
+          "filename": "./logs/app.log",
+          "mode": "a"
+        }
+      },
+      "loggers": {
+        "default": {
+          "level": "INFO",
+          "handlers": ["console", "file"],
+          "propagate": false
+        },
+        "dev": {
+          "level": "DEBUG",
+          "handlers": ["console"],
+          "propagate": false
+        },
+        "ElasticsearchEngine": {
+          "level": "INFO",
+          "handlers": ["console", "file"],
+          "propagate": false
+        },
+        "BeautifulSoupEngine": {
+          "level": "INFO",
+          "handlers": ["console", "file"],
+          "propagate": false
+        }
+      }
+    }
+  }
+}

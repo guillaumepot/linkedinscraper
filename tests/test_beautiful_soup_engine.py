@@ -4,7 +4,7 @@ import pytest
 from unittest.mock import Mock, patch
 from bs4 import BeautifulSoup
 import requests
-from src.job_scraping.BeautifulSoupEngine import BeautifulSoupEngine
+from src.BeautifulSoupEngine import BeautifulSoupEngine
 
 
 class TestBeautifulSoupEngine:
@@ -49,7 +49,7 @@ class TestBeautifulSoupEngine:
     
     def test_init_creates_logger_and_stores_config(self, sample_config, sample_preferences):
         """Test that initialization properly sets up logger and stores config."""
-        with patch('src.job_scraping.BeautifulSoupEngine.LoggerManager') as mock_logger_manager:
+        with patch('src.BeautifulSoupEngine.LoggerManager') as mock_logger_manager:
             mock_logger = Mock()
             mock_logger_manager.configure_logger.return_value = mock_logger
             
@@ -58,8 +58,7 @@ class TestBeautifulSoupEngine:
             assert engine.config == sample_config
             assert engine.logger == mock_logger
             mock_logger_manager.configure_logger.assert_called_once_with(
-                name='BeautifulSoupEngine', 
-                verbose=True
+                name='BeautifulSoupEngine'
             )
     
     def test_context_manager_enter_returns_self(self, engine):
@@ -93,8 +92,8 @@ class TestBeautifulSoupEngine:
         engine.unload_soup()
         assert engine.soup is None
     
-    @patch('src.job_scraping.BeautifulSoupEngine.requests.get')
-    @patch('src.job_scraping.BeautifulSoupEngine.bs')
+    @patch('src.BeautifulSoupEngine.requests.get')
+    @patch('src.BeautifulSoupEngine.bs')
     def test_get_with_retry_success_on_first_attempt(self, mock_bs, mock_get, engine):
         """Test successful request on first attempt."""
         url = "https://example.com"
@@ -116,8 +115,8 @@ class TestBeautifulSoupEngine:
         mock_response.raise_for_status.assert_called_once()
         mock_bs.assert_called_once_with("<html>test</html>", 'html.parser')
     
-    @patch('src.job_scraping.BeautifulSoupEngine.requests.get')
-    @patch('src.job_scraping.BeautifulSoupEngine.time.sleep')
+    @patch('src.BeautifulSoupEngine.requests.get')
+    @patch('src.BeautifulSoupEngine.time.sleep')
     def test_get_with_retry_handles_timeout_with_retry(self, mock_sleep, mock_get, engine):
         """Test retry logic on timeout exception."""
         url = "https://example.com"
@@ -130,7 +129,7 @@ class TestBeautifulSoupEngine:
         assert mock_sleep.call_count == 2  # Sleep called between retries
         mock_sleep.assert_called_with(engine.config['retry_delay'])
     
-    @patch('src.job_scraping.BeautifulSoupEngine.requests.get')
+    @patch('src.BeautifulSoupEngine.requests.get')
     def test_get_with_retry_handles_unexpected_error(self, mock_get, engine):
         """Test handling of unexpected errors."""
         url = "https://example.com"
@@ -141,7 +140,7 @@ class TestBeautifulSoupEngine:
         assert result is None
         mock_get.assert_called_once()
     
-    @patch('src.job_scraping.BeautifulSoupEngine.requests.get')
+    @patch('src.BeautifulSoupEngine.requests.get')
     def test_get_with_retry_uses_proxies_when_configured(self, mock_get, engine):
         """Test that proxies are used when configured."""
         engine.config['proxies'] = ['http://proxy1.com:8080']
@@ -150,7 +149,7 @@ class TestBeautifulSoupEngine:
         mock_response.text = "<html>test</html>"
         mock_get.return_value = mock_response
         
-        with patch('src.job_scraping.BeautifulSoupEngine.bs'):
+        with patch('src.BeautifulSoupEngine.bs'):
             engine.get_with_retry(url)
         
         mock_get.assert_called_once_with(
@@ -361,13 +360,13 @@ class TestBeautifulSoupEngineIntegration:
     
     def test_engine_as_context_manager(self, engine_config):
         """Test that engine works properly as a context manager."""
-        with patch('src.job_scraping.BeautifulSoupEngine.LoggerManager'):
+        with patch('src.BeautifulSoupEngine.LoggerManager'):
             with BeautifulSoupEngine(engine_config, {}) as engine:
                 assert engine is not None
                 assert hasattr(engine, 'config')
                 assert hasattr(engine, 'logger')
     
-    @patch('src.job_scraping.BeautifulSoupEngine.requests.get')
+    @patch('src.BeautifulSoupEngine.requests.get')
     def test_full_job_card_extraction_flow(self, mock_get, engine_config):
         """Test the complete flow of extracting job cards."""
         # Mock HTML response that resembles LinkedIn structure
@@ -394,11 +393,11 @@ class TestBeautifulSoupEngineIntegration:
             }]
         }
         
-        with patch('src.job_scraping.BeautifulSoupEngine.LoggerManager'):
+        with patch('src.BeautifulSoupEngine.LoggerManager'):
             engine = BeautifulSoupEngine(engine_config, preferences)
             
             # Mock the parent element for data-entity-urn  
-            with patch('src.job_scraping.BeautifulSoupEngine.bs') as mock_bs:
+            with patch('src.BeautifulSoupEngine.bs') as mock_bs:
                 mock_html_with_parent = """
                 <html>
                     <div data-entity-urn="urn:li:fsd_jobPosting:987654">

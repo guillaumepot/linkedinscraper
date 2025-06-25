@@ -1,8 +1,13 @@
 # scripts/proxy_connection_tester.py
-
+import os
 import requests
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from src.utils.tools import ExecutionTime, load_configuration
 
 
+@ExecutionTime
 def test_proxy_connection(proxies: dict, headers: dict):
 
   url = "https://api.ipify.org?format=json"
@@ -17,7 +22,7 @@ def test_proxy_connection(proxies: dict, headers: dict):
 
   # Make the second API call using the proxy
   try:
-    response2 = requests.get(url, proxies= proxies)
+    response2 = requests.get(url, proxies = proxies, headers = headers)
     response2.raise_for_status()
     ip2 = response2.json()['ip']
   except requests.exceptions.RequestException as e:
@@ -33,4 +38,7 @@ def test_proxy_connection(proxies: dict, headers: dict):
 
 
 if __name__ == '__main__':
-  test_proxy_connection()
+  config = load_configuration('config/config.json', type = 'json')['BeautifulSoupEngine']
+  proxies = config['proxies']
+  headers = config['headers']
+  test_proxy_connection(proxies, headers)

@@ -1,11 +1,16 @@
 services:
   flask:
     build:
-      context: ./src
-      dockerfile: flask/Dockerfile
+      context: .
+      dockerfile: Dockerfile
     container_name: flask
     environment:
       - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ELASTICSEARCH_VERIFY_CERTS=false
+      - ELASTICSEARCH_USE_SSL=false
+      - ELASTICSEARCH_CA_CERTS=null
+      - ELASTICSEARCH_BASIC_AUTH=null
+      - ELASTICSEARCH_INDEXES=jobs
     ports:
       - "5001:5001"
     depends_on:
@@ -18,6 +23,7 @@ services:
       interval: 30s
     volumes:
       - ./src/flask:/app
+      - ./src/ElasticSearchEngine.py:/utils/ElasticSearchEngine.py
 
 
   elasticsearch:
@@ -60,6 +66,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+    profiles:
+      - kibana
 
 networks:
   elastic:

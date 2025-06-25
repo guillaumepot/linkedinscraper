@@ -1,4 +1,4 @@
-# src/job_scraping/BeautifulSoupEngine.py
+# src/BeautifulSoupEngine.py
 
 from bs4 import BeautifulSoup as bs
 import requests
@@ -20,8 +20,10 @@ class BeautifulSoupEngine:
             config (dict): Configuration dictionary containing settings like max_retry, headers, etc.
             preferences (dict): User preferences for job searching.
         """
-        self.logger = LoggerManager.configure_logger(name='BeautifulSoupEngine', verbose=True)
         self.config = config
+        self.preferences = preferences
+        self.logger = LoggerManager.configure_logger(name='BeautifulSoupEngine')
+        self.session = None
 
     def __enter__(self):
         """Context manager entry point."""
@@ -32,8 +34,8 @@ class BeautifulSoupEngine:
         self.close()
 
     def close(self):
-        """Close any open sessions or connections."""
-        if hasattr(self, 'session'):
+        """Close any open resources like sessions."""
+        if hasattr(self, 'session') and self.session:
             self.session.close()
 
     def unload_soup(self):
@@ -168,13 +170,13 @@ class BeautifulSoupEngine:
             List[str]: List of LinkedIn job search URLs.
         """
         urls = []
-        for k in range(self.config['rounds']):
+        for i in range(self.config['rounds']):
             for query in preferences['search_queries']:
                 # URL Encode keywords and location
                 keywords = quote(query['keywords'])
                 location = quote(query['location'])
-                for i in range(self.config['pages_to_scrape']):
-                    url = f"https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords={keywords}&location={location}&f_TPR=&f_WT={query['f_WT']}&geoId=&f_TPR={self.config['max_age']}&start={25*i}"
+                for j in range(self.config['pages_to_scrape']):
+                    url = f"https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords={keywords}&location={location}&f_TPR=&f_WT={query['f_WT']}&geoId=&f_TPR={self.config['max_age']}&start={25*j}"
                     urls.append(url)
         return urls
 

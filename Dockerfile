@@ -3,6 +3,9 @@ FROM python:3.12-slim
 # Set working directory
 WORKDIR /app
 
+# Create /utils dir
+RUN mkdir /utils
+
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     curl \
@@ -16,7 +19,7 @@ RUN pip install --no-cache-dir \
     requests \
     pyyaml \
     scikit-learn \
-    pypdf2
+    pypdf
 
 # Add the parent directory to Python path so imports work correctly
 ENV PYTHONPATH=/app:$PYTHONPATH

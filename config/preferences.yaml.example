@@ -16,7 +16,7 @@ title_exclude: ["frontend", "react.js"]
 company_exclude: ["ClickJobs.io"]
 languages: ["fr", "en"]
 # Words to include from the job description (if not in the description, the job will be filtered)
-desc_words: ["Data", "Engineer", "Scientist", "Python", "Mlops", "pipeline", "ETL", "Ops", "Machine Learning", "AI", "IA", "SQL", "BI", "BigQuery", "github", "Terraform", "bac+5", "master", "anglais", "AWS", "cloud", "ETL", "Spark", "Looker", "CI/CD", "kafka", "PowerBI"]
+desciption_words_include: ["Data", "Engineer", "Scientist", "Python", "Mlops", "pipeline", "ETL", "Ops", "Machine Learning", "AI", "IA", "SQL", "BI", "BigQuery", "github", "Terraform", "bac+5", "master", "anglais", "AWS", "cloud", "ETL", "Spark", "Looker", "CI/CD", "kafka", "PowerBI"]
 max_age: 7 # in days
 
 # LLM params (Not implemented yet)
