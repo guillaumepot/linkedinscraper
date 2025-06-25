@@ -53,7 +53,7 @@ function setupEventListeners() {
     });
     
     // Status filter checkboxes
-    const statusFilters = ['filterApplied', 'filterInterview', 'filterInterested', 'filterHidden', 'filterRejected', 'filterFiltered'];
+    const statusFilters = ['filterApplied', 'filterInterview', 'filterInterested', 'filterHidden', 'filterRejected', 'filterFiltered', 'showAllJobs'];
     statusFilters.forEach(filterId => {
         document.getElementById(filterId).addEventListener('change', function() {
             currentPage = 1;
@@ -293,7 +293,7 @@ function clearFilters() {
     document.getElementById('dateToFilter').value = '';
     
     // Clear status filter checkboxes
-    const statusFilters = ['filterApplied', 'filterInterview', 'filterInterested', 'filterHidden', 'filterRejected', 'filterFiltered'];
+    const statusFilters = ['filterApplied', 'filterInterview', 'filterInterested', 'filterHidden', 'filterRejected', 'filterFiltered', 'showAllJobs'];
     statusFilters.forEach(filterId => {
         document.getElementById(filterId).checked = false;
     });
@@ -336,8 +336,15 @@ function buildFilters() {
     if (document.getElementById('filterRejected').checked) {
         filters.rejected = 'true';
     }
+    
+
     if (document.getElementById('filterFiltered').checked) {
         filters.filtered = 'true';
+    }
+    
+    // Handle "Show all jobs" checkbox - exclude filtered jobs by default unless this is checked
+    if (!document.getElementById('showAllJobs').checked) {
+        filters.exclude_filtered = 'true';
     }
     
     return filters;

@@ -44,6 +44,11 @@ def api_jobs():
         if value is not None and value.lower() == 'true':
             filters[field] = 'true'
     
+    # Handle exclude_filtered parameter
+    exclude_filtered = request.args.get('exclude_filtered')
+    if exclude_filtered is not None and exclude_filtered.lower() == 'true':
+        filters['exclude_filtered'] = 'true'
+    
     filters['company'] = request.args.get('company')
     filters['date_from'] = request.args.get('date_from')
     filters['date_to'] = request.args.get('date_to')

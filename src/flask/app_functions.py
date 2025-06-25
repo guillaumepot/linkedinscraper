@@ -276,6 +276,16 @@ def get_jobs_from_es(search_query=None, filters=None, page=1, per_page=20, sort_
                     }
                 })
         
+        # Special handling for excluding filtered jobs by default
+        if filters.get('exclude_filtered') == 'true':
+            query["query"]["bool"]["filter"].append({
+                "bool": {
+                    "must_not": [
+                        {"term": {"filtered": 1}}
+                    ]
+                }
+            })
+        
         # Filter by company
         if filters.get('company'):
             query["query"]["bool"]["filter"].append({
